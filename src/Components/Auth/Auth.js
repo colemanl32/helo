@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import { withRouter } from 'react-router-dom'
+import axios from 'axios'
 import Nav from '../Nav/Nav'
 
 
@@ -7,17 +8,32 @@ import Nav from '../Nav/Nav'
     constructor(){
         super()
         this.state = {
-            usernamee: '',
+            username: '',
             password: ''
         }
     }
 
-        handleLogin = (e) => {
+        handleInput = (e) => {
+            this.setState({
+                [e.target.name]: e.target.value
+            })
+        }
+
+
+        handleLogin = () => {
 
         }
 
-        handleRegister = (e) => {
-
+        handleRegister = () => {
+            const {username, password} = this.state
+            axios.post(`/api/auth/register`, {username, password})
+            .then((res) => {
+                this.setState(res.data)
+                this.props.history.push('/Dashboard/Dashboard')
+            })
+            .catch((err) => {
+                console.log(err)
+            })
         }
     //     handleNav =() => {
     //     if(this.props.location.path = '/'){
@@ -32,11 +48,20 @@ import Nav from '../Nav/Nav'
                 <div>
                 {/* {this.props.location.pathname !== "/" && <Nav />} */}
                 
-                    Auth
+                    <div>
+                        <input placeholder="Username" name="username" onChange ={(e) => {this.handleInput(e)}}/>
+                        <input placeholder="Password" name="password" onChange={(e) => {this.handleInput(e)}}/>
+                    </div>
+                    <div>
+                        <button>Login</button>
+                        <button onClick={() => {this.handleRegister()}}>Register</button>
+                    </div>
+                        Auth
+
                 </div>
             )
 
         }
 
 }
-export default withRouter(Auth)
+export default Auth
